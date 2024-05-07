@@ -59,6 +59,19 @@ function s.initial_effect(c)
 	e8:SetTarget(s.destg)
 	e8:SetOperation(s.desop)
 	c:RegisterEffect(e8)
+	--tribute check
+	local e9=Effect.CreateEffect(c)
+	e9:SetType(EFFECT_TYPE_SINGLE)
+	e9:SetCode(EFFECT_MATERIAL_CHECK)
+	e9:SetValue(s.valcheck2)
+	c:RegisterEffect(e9)
+	--give atk effect only when  summon
+	local e10=Effect.CreateEffect(c)
+	e10:SetType(EFFECT_TYPE_SINGLE)
+	e10:SetCode(EFFECT_SUMMON_COST)
+	e10:SetOperation(s.facechk2)
+	e10:SetLabelObject(e9)
+	c:RegisterEffect(e10)
 end
 --unaffected by non-Divine cards
 function s.econ(e)
@@ -107,7 +120,7 @@ function s.valcheck(e,c)
 	local tc=g:GetFirst()
 	local atk=0
 	for tc in aux.Next(g) do
-		local catk=tc:GetTextAttack()
+		local catk=tc:GetAttack()
 		atk=atk+(catk>=0 and catk or 0)
 	end
 	if e:GetLabel()==1 then
@@ -163,4 +176,26 @@ function s.desop(e,tp,eg,ep,ev,re,r,rp)
 	if tc:IsRelateToEffect(e) then
 		Duel.SendtoGrave(tc,REASON_EFFECT)
 	end
+end
+--atk
+function s.valcheck2(e,c)
+	local g=c:GetMaterial()
+	local tc=g:GetFirst()
+	local def=0
+	for tc in aux.Next(g) do
+		local cdef=tc:GetDefense()
+		def=def+(cdef>=0 and cdef or 0)
+	end
+	if e:GetLabel()==2 then
+		e:SetLabel(0)
+		local e1=Effect.CreateEffect(c)
+		e1:SetType(EFFECT_TYPE_SINGLE)
+		e1:SetCode(EFFECT_SET_DEFENSE)
+		e1:SetValue(def)
+		e1:SetReset(RESET_EVENT+0xff0000)
+		c:RegisterEffect(e1)
+	end
+end
+function s.facechk2(e,tp,eg,ep,ev,re,r,rp)
+	e:GetLabelObject():SetLabel(2)
 end
