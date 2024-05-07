@@ -1,0 +1,11 @@
+{
+	"repos": [
+		{
+			"url": "https://github.com/Palafx/raas_coms",
+			"repo_name": "raas52 Commissions",
+			"repo_path": "./repositories/raas_coms",
+			"should_update": true,
+			"should_read": true
+		}
+	]
+}
